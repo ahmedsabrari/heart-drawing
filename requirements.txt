@@ -1,0 +1,10 @@
+# Heart Drawing Project Requirements
+# This project uses only standard Python libraries
+# No additional packages are required
+
+# Python version requirement
+python>=3.6
+
+# Note: The following are standard libraries used by this project:
+# - math
+# - turtle (which uses tkinter)
