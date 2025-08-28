@@ -1,4 +1,4 @@
-name: Python Package
+name: Python Package CI
 
 on:
   push:
@@ -10,10 +10,36 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.x'
-    - name: Run basic check
-      run: python src/heart.py --help || echo "Script executed"
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: Run heart drawing script
+      run: |
+        # إنشاء مجلد output إذا لم يكن موجوداً
+        mkdir -p images
+        # تشغيل البرنامج النصي
+        python src/heart.py
+        # التحقق من إنشاء الملف الناتج
+        if [ -f "images/heart-output.png" ]; then
+          echo "Success: Heart image was created"
+        else
+          echo "Error: Heart image was not created"
+          exit 1
+        fi
+
+    - name: Upload generated image as artifact
+      uses: actions/upload-artifact@v3
+      if: success()
+      with:
+        name: heart-image
+        path: images/heart-output.png
